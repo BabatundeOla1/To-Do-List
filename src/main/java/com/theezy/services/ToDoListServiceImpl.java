@@ -17,19 +17,20 @@ public class ToDoListServiceImpl implements ToDoListService{
     private ToDoListRepository toDoListRepository;
     @Override
     public ToDoListResponse createToDoList(ToDoListRequest toDoListRequest) {
+
         if (toDoListRepository.existsByTitle(toDoListRequest.getTitle())){
             throw new ToDoListAlreadyExistException("Task Already Exist");
         }
 
         ToDoList newToDoList = ToDoListMapper.mapRequestToToDoList(toDoListRequest);
-        toDoListRepository.save(newToDoList);
-        return ToDoListMapper.mapToDoListToResponse(newToDoList);
+        ToDoList savedToDoList = toDoListRepository.save(newToDoList);
+        return ToDoListMapper.mapToDoListToResponse(savedToDoList);
     }
 
     @Override
-    public void deleteTaskByTitle(String title) {
-       ToDoList foundToDo = toDoListRepository.findToDoListByTitle(title);
-       toDoListRepository.delete(foundToDo);
+    public ToDoListResponse deleteTaskByTitle(String title) {
+        toDoListRepository.deleteToDoListByTitle(title);
+        return ToDoListMapper.mapToDeleteToDoList("Successfully deleted");
     }
 
     @Override
@@ -49,13 +50,26 @@ public class ToDoListServiceImpl implements ToDoListService{
     public void clearAll() {
         toDoListRepository.deleteAll();
     }
-
-    @Override
-    public ToDoListRequest searchWithTitle(String title) {
-        ToDoList foundToDoList = toDoListRepository.findToDoListByTitle(title);
-        if (foundToDoList.getTitle() == title){
-            
-        }
-        return null;
-    }
+//
+//    @Override
+//    public ToDoList searchWithTitle(String title) {
+//        ToDoList foundToDoList = toDoListRepository.findToDoListByTitle(title);
+//        if (foundToDoList == null) {
+//            throw new ToDoListNotFoundException("Task with title \"" + title + "\" not found");
+//        }
+//        return foundToDoList;
+//    }
+//
+//
+//    @Override
+//    public void markAsComplete(String id) {
+//        ToDoList foundToDoList = toDoListRepository.findToDoListById(id);
+//
+//        if (foundToDoList.isComplete()) {
+//            throw new TaskAlreadyCompletedException("Task already marked as complete");
+//        }
+//
+//        foundToDoList.setComplete(true);
+//        toDoListRepository.save(foundToDoList);
+//    }
 }

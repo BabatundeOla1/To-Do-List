@@ -17,11 +17,7 @@ public class ToDoListMapper {
         }
 
         ToDoList toDoList = new ToDoList();
-
-//        String title = toDoListRequest.getTitle();
-//        String capitalizeFirstLetter = title.substring(0, 1).toUpperCase() + title.substring(1).toLowerCase();
         toDoList.setTitle(toDoListRequest.getTitle());
-
         toDoList.setDescription(toDoListRequest.getDescription());
         toDoList.setCreatedTime(LocalDateTime.now());
 
@@ -43,7 +39,13 @@ public class ToDoListMapper {
     public static ToDoListResponse mapToDoListToResponse(ToDoList toDoList){
         ToDoListResponse toDoListResponse = new ToDoListResponse();
         toDoListResponse.setMessage("Successfully");
-        toDoListResponse.setData(toDoList.getTitle());
+        toDoListResponse.setData(toDoList.getId());
+        return toDoListResponse;
+    }
+
+    public static ToDoListResponse mapToDeleteToDoList(String message){
+        ToDoListResponse toDoListResponse = new ToDoListResponse();
+        toDoListResponse.setMessage("Successfully deleted");
         return toDoListResponse;
     }
 }
