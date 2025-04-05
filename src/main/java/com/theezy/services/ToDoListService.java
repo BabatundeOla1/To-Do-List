@@ -12,11 +12,9 @@ public interface ToDoListService {
 
    ToDoListResponse updateToDoList(String toDoTiTle, ToDoListRequest toDoListRequest);
 
-//    ToDoListResponse updateToDoList(String toDoTiTle, ToDoListRequest toDoListRequest);
-//
-    void clearAll();
-//
-//    ToDoList searchWithTitle(String title);
-//
-//    void markAsComplete(String id);
+    ToDoListResponse clearAll();
+
+    ToDoList searchWithTitle(String title);
+
+    void markAsComplete(String description);
 }

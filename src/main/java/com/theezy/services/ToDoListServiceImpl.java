@@ -4,11 +4,15 @@ import com.theezy.data.model.ToDoList;
 import com.theezy.data.repositories.ToDoListRepository;
 import com.theezy.dto.request.ToDoListRequest;
 import com.theezy.dto.response.ToDoListResponse;
+import com.theezy.utils.exception.TaskAlreadyCompletedException;
 import com.theezy.utils.exception.ToDoListAlreadyExistException;
 import com.theezy.utils.exception.ToDoListCanNotBeNullException;
+import com.theezy.utils.exception.ToDoListNotFoundException;
 import com.theezy.utils.mapper.ToDoListMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class ToDoListServiceImpl implements ToDoListService{
@@ -37,7 +41,7 @@ public class ToDoListServiceImpl implements ToDoListService{
     public ToDoListResponse updateToDoList(String toDoTiTle, ToDoListRequest toDoListRequest) {
         ToDoList foundToDoList = toDoListRepository.findToDoListByTitle(toDoTiTle);
         if (foundToDoList == null){
-            throw new ToDoListCanNotBeNullException("Task can not be null");
+            throw new ToDoListNotFoundException("Task not found");
         }
 
         foundToDoList.setTitle(toDoListRequest.getTitle());
@@ -47,29 +51,28 @@ public class ToDoListServiceImpl implements ToDoListService{
     }
 
     @Override
-    public void clearAll() {
+    public ToDoListResponse clearAll() {
         toDoListRepository.deleteAll();
+        return ToDoListMapper.mapToDeleteToDoList("All Task deleted");
     }
-//
-//    @Override
-//    public ToDoList searchWithTitle(String title) {
-//        ToDoList foundToDoList = toDoListRepository.findToDoListByTitle(title);
-//        if (foundToDoList == null) {
-//            throw new ToDoListNotFoundException("Task with title \"" + title + "\" not found");
-//        }
-//        return foundToDoList;
-//    }
-//
-//
-//    @Override
-//    public void markAsComplete(String id) {
-//        ToDoList foundToDoList = toDoListRepository.findToDoListById(id);
-//
-//        if (foundToDoList.isComplete()) {
-//            throw new TaskAlreadyCompletedException("Task already marked as complete");
-//        }
-//
-//        foundToDoList.setComplete(true);
-//        toDoListRepository.save(foundToDoList);
-//    }
+
+    @Override
+    public ToDoList searchWithTitle(String title) {
+        ToDoList foundToDoList = toDoListRepository.findToDoListByTitle(title);
+        if (foundToDoList == null) {
+            throw new ToDoListNotFoundException("Task with title " + title + " not found");
+        }
+        return foundToDoList;
+    }
+
+    @Override
+    public void markAsComplete(String description) {
+        Optional<ToDoList> foundToDoList = toDoListRepository.findToDoListByDescription(description);
+
+        if (foundToDoList.isPresent()) {
+            ToDoList toDoListToMarkAsCompleted = foundToDoList.get();
+            toDoListToMarkAsCompleted.setComplete(true);
+            toDoListRepository.save(toDoListToMarkAsCompleted);
+        }
+    }
 }

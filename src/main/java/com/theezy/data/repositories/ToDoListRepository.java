@@ -9,11 +9,11 @@ import java.util.Optional;
 
 public interface ToDoListRepository extends MongoRepository<ToDoList, String> {
 
-    Optional<ToDoList> findToDoListByDueDate(LocalDateTime dueDate);
+    Optional<ToDoList> findToDoListByDescription(String description);
     boolean existsByTitle(String title);
 
     void deleteToDoListByTitle(String title);
     ToDoList findToDoListByTitle(String title);
 
-//    ToDoList findToDoListById(String id);
+    ToDoList findToDoListById(String id);
 }
