@@ -42,6 +42,8 @@ public class ToDoListController {
         return new ResponseEntity<>(toDoListService.searchWithTitle(title), HttpStatus.OK);
     }
 
+    @PutMapping("/completeTask")
+    public
 
 
 }
